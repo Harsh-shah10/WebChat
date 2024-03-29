@@ -56,8 +56,8 @@ class Login(View):
     
 class Logout(View):
     def get(self, request):
-        pass
-    
+        logout(request)
+        return redirect("main")
     
 class Home(View):
     def get(self, request):
