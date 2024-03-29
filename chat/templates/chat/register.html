@@ -10,6 +10,15 @@
 
     <h1>Register</h1>
 
+    {% if errors %}
+    <ul style="color: red;">
+        {% for field, error_message in errors.items %}
+            <li>{{ error_message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
     <form method="post">
         {% csrf_token %}
         

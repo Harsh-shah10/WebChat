@@ -5,7 +5,9 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.contrib.auth import authenticate, login, logout
 from .models import UsersTbl
-from django.db import IntegrityError
+from django.db import IntegrityError 
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 
 # Create your views here.
@@ -52,34 +54,59 @@ class Register(View):
         email = received_data.get("email")
         password = received_data.get("password")
         
-        # Check if the username already exists
-        if UsersTbl.objects.filter(username=username).exists():
-            print("Error: Username already exists.")
+        # Basic validation
+        errors = {}
+        if not first_name:
+            errors['first_name'] = 'First name is required.'
+        if not last_name:
+            errors['last_name'] = 'Last name is required.'
+        if not username:
+            errors['username'] = 'Username is required.'
+        elif UsersTbl.objects.filter(username=username).exists():
+            errors['username'] = 'Username already exists.'
+        if not email:
+            errors['email'] = 'Email is required.'
         else:
-            # Create a new user instance and save it to the database
             try:
-                new_user = UsersTbl(
-                    first_name=first_name,
-                    last_name=last_name,
-                    username=username,
-                    email=email,
-                    password=password
-                )
-                new_user.save()
-            except IntegrityError as e:
-                print("Integrity Error:", str(e))
-            except Exception as e:
-                print("Error is : ",str(e))
+                validate_email(email)
+            except ValidationError:
+                errors['email'] = 'Invalid email format.'
+        if not password:
+            errors['password'] = 'Password is required.'
+
+        # If there are no validation errors, proceed with creating the user
+        if not errors:
+            # Check if the username already exists
+            if UsersTbl.objects.filter(username=username).exists():
+                print("Error: Username already exists.")
+            else:
+                print("First Name:", first_name)
+                print("Last Name:", last_name)
+                print("Username:", username)
+                print("Email:", email)
                 
-            print("User created successfully.")
-                
-        print("First Name:", first_name)
-        print("Last Name:", last_name)
-        print("Username:", username)
-        print("Email:", email)
-        print("Password:", password)
-        
-        return render(request, 'chat/register.html')
+                # Create a new user instance and save it to the database
+                try:
+                    new_user = UsersTbl(
+                        first_name=first_name,
+                        last_name=last_name,
+                        username=username,
+                        email=email,
+                        password=password
+                    )
+                    new_user.save()
+                    
+                    user = authenticate(request=request, username=username, password=password)
+                    if user:
+                        print("User created successfully.")
+                    else:
+                        print("Fail !!")
+                except Exception as e:
+                    errors['Adding new user']='DB Error is : '+str(e)
+         
+        # Create or update the context dictionary
+        context = {'errors': errors}
+        return render(request, 'chat/register.html', context=context)
         
         
         
