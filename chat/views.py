@@ -2,6 +2,11 @@ from django.shortcuts import render
 from django.views import View
 
 from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from django.contrib.auth import authenticate, login, logout
+from .models import UsersTbl
+from django.db import IntegrityError
+
 
 # Create your views here.
 
@@ -37,3 +42,44 @@ class Chatting(View):
 class Register(View):
     def get(self, request):
         return render(request, 'chat/register.html')
+    
+    def post(self, request):
+        received_data = request.POST.dict()
+        
+        first_name = received_data.get("first_name")
+        last_name = received_data.get("last_name")
+        username = received_data.get("username")
+        email = received_data.get("email")
+        password = received_data.get("password")
+        
+        # Check if the username already exists
+        if UsersTbl.objects.filter(username=username).exists():
+            print("Error: Username already exists.")
+        else:
+            # Create a new user instance and save it to the database
+            try:
+                new_user = UsersTbl(
+                    first_name=first_name,
+                    last_name=last_name,
+                    username=username,
+                    email=email,
+                    password=password
+                )
+                new_user.save()
+            except IntegrityError as e:
+                print("Integrity Error:", str(e))
+            except Exception as e:
+                print("Error is : ",str(e))
+                
+            print("User created successfully.")
+                
+        print("First Name:", first_name)
+        print("Last Name:", last_name)
+        print("Username:", username)
+        print("Email:", email)
+        print("Password:", password)
+        
+        return render(request, 'chat/register.html')
+        
+        
+        
