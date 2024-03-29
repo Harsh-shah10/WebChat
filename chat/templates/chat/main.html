@@ -1,0 +1,24 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Membership Portal</title>
+</head>
+<body>
+    <h3>Welcome to Our Membership Portal</h1>
+        <img src="{% static 'chat/logo.jpeg' %}" >
+        <br>
+        
+    <h5>New Members
+    <br><br>
+    <a href="{% url 'register' %}"><button>Sign Up</button></a>
+    <br>
+    <h5>Existing Members
+    <br><br>
+    <a href="{% url 'login' %}"><button>Login</button></a>
+
+</body>
+</html>

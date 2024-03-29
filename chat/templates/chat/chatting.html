@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Person</title>
+</head>
+<body>
+    <header style="background-color: #f0f0f0; padding: 10px;">
+        <a href="{% url 'home' %}" style="text-decoration: none;"><button style="padding: 10px;">Back</button></a><br><br>
+        <div style="display: inline-block; margin-left: 10px;">
+            <img src="{% static 'chat/face.png' %}" style="width: 80px; height: 80px; border-radius: 50%;">
+            <p style="margin: 0;">Person's Name</p><br><br>
+        </div>
+        <p style="font-weight: bold; margin: 0;">Me : The User's Name</p>
+    </header>
+
+    <main id="messages-area" style="margin-top: 20px;">
+        <section class="to" style="display: flex; flex-direction: row; align-items: center; margin-bottom: 10px;">
+            <div style="margin-right: 10px;">
+                <p style="margin: 0;">2024-01-30</p>
+                {% comment %} <div style="display: flex;">
+                    <div style="width: 10px; height: 10px; background-color: green; border-radius: 50%; margin-right: 5px;"></div>
+                    <div style="width: 10px; height: 10px; background-color: green; border-radius: 50%;"></div>
+                </div> {% endcomment %}
+                <p style="margin: 0;">10:55:02</p>
+            </div>
+            <div style="background-color: lightblue; padding: 10px; border-radius: 10px;">
+                <p style="overflow-wrap: anywhere; margin: 0;">Message from you</p>
+            </div>
+        </section>
+        <br>
+        <section class="from" style="display: flex; flex-direction: row; align-items: center; margin-bottom: 10px;">
+            <div style="margin-right: 10px;">
+                <p style="margin: 0;">2024-01-30</p>
+                <p style="margin: 0;">10:55:02</p>
+            </div>
+            <div style="background-color: lightgrey; padding: 10px; border-radius: 10px;">
+                <p style="overflow-wrap: anywhere; margin: 0;">Message from the other</p>
+            </div>
+        </section>
+    </main>
+
+    <footer style="position: fixed; bottom: 0; width: 100%; background-color: #f0f0f0; padding: 10px;">
+        <textarea name="text" oninput="this.style.height = ''; this.style.height = this.scrollHeight +'px';" id="the-message-to-send" style="resize: none; width: calc(100% - 80px);"></textarea>
+        <button id="send-message-button" style="width: 80px; height: 100%;">Send</button>
+    </footer>
+
+    <script>
+        // Create a new WebSocket connection using the provided URL
+        const url = "ws://127.0.0.1:8000/wsocket1";
+        const chat_websocket = new WebSocket(url);
+
+
+        const send_btn = document.getElementById("send-message-button");
+        send_btn.addEventListener("click", function(){
+
+            // Send a message through the WebSocket connection
+            chat_websocket.send('{"type":"message", "data":"hello"}')
+        });
+
+        // Define a callback function to handle incoming messages received through the WebSocket
+        chat_websocket.onmessage = function(event) {
+            console.log(event.data); // Log the received message event to the console
+        };
+    </script>
+</body>
+</html>
