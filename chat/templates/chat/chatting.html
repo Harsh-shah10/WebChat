@@ -21,10 +21,6 @@
         <section class="to" style="display: flex; flex-direction: row; align-items: center; margin-bottom: 10px;">
             <div style="margin-right: 10px;">
                 <p style="margin: 0;">2024-01-30</p>
-                {% comment %} <div style="display: flex;">
-                    <div style="width: 10px; height: 10px; background-color: green; border-radius: 50%; margin-right: 5px;"></div>
-                    <div style="width: 10px; height: 10px; background-color: green; border-radius: 50%;"></div>
-                </div> {% endcomment %}
                 <p style="margin: 0;">10:55:02</p>
             </div>
             <div style="background-color: lightblue; padding: 10px; border-radius: 10px;">
@@ -55,10 +51,28 @@
 
 
         const send_btn = document.getElementById("send-message-button");
+        const get_text = document.getElementById("the-message-to-send");
+        const message_area = document.getElementById("messages-area");
+
         send_btn.addEventListener("click", function(){
 
             // Send a message through the WebSocket connection
-            chat_websocket.send('{"type":"message", "data":"hello"}')
+            chat_websocket.send(JSON.stringify({"type": "new_message", "message": get_text.value}));
+
+            // create the message area
+            message_area.insertAdjacentHTML("beforeend", `
+            <section class="to" style="display: flex; flex-direction: row; align-items: center; margin-bottom: 10px;">
+                <div style="margin-right: 10px;">
+                    <p style="margin: 0;">2024-01-30</p>
+                    <p style="margin: 0;">10:55:02</p>
+                </div>
+                <div style="background-color: lightblue; padding: 10px; border-radius: 10px;">
+                    <p style="overflow-wrap: anywhere; margin: 0;">${get_text.value}</p>
+                </div>
+            </section>
+            `);
+
+            get_text.value = "";
         });
 
         // Define a callback function to handle incoming messages received through the WebSocket
