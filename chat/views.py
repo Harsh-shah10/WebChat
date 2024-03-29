@@ -19,11 +19,17 @@ class Test(View):
 
 class Main(View):
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect("home")
+        
         return render(request, 'chat/main.html')
     
     
 class Login(View):
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect("home")
+        
         return render(request, 'chat/login.html')
     
     def post(self, request):
@@ -61,7 +67,10 @@ class Logout(View):
     
 class Home(View):
     def get(self, request):
-        return render(request, 'chat/home.html')
+        if request.user.is_authenticated:
+            return render(request, 'chat/home.html')
+        
+        return redirect("main")
     
 class Chatting(View):
     def get(self, request):
@@ -69,6 +78,9 @@ class Chatting(View):
     
 class Register(View):
     def get(self, request):
+        if request.user.is_authenticated:
+            return redirect("home")
+        
         return render(request, 'chat/register.html')
     
     def post(self, request):
