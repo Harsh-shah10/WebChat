@@ -9,7 +9,16 @@
 <body>
     <h1>Login</h1>
 
+    {% if errors %}
+    <ul style="color: red;">
+        {% for field, error_message in errors.items %}
+            <li>{{ error_message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     <form method="post">
+        {% csrf_token %}
         <input type="text" name="username" placeholder="Username"><br><br>
         <input type="text" name="password" placeholder="password"><br><br>
         <button>Login</button>

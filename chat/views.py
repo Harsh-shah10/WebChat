@@ -1,6 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
-
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.contrib.auth import authenticate, login, logout
@@ -27,6 +26,33 @@ class Login(View):
     def get(self, request):
         return render(request, 'chat/login.html')
     
+    def post(self, request):
+        received_data = request.POST.dict()
+     
+        username = received_data.get("username")
+        password = received_data.get("password")
+        
+        # Basic validation
+        errors = {}
+        if not username:
+            errors['username'] = 'Username is required.'
+        if not UsersTbl.objects.filter(username=username).exists():
+            errors['username'] = 'Username does not exists.'
+        if not password:
+            errors['password'] = 'Password is required.'
+
+        if not errors:
+            user = authenticate(request=request, username=username, password=password)
+            if user:
+                print("User login successfully.")
+                login(request=request, user=user)
+                return redirect("home")
+            else:
+                errors['Login Failed'] = 'Incorrect Password !!'
+        
+        # Create or update the context dictionary
+        context = {'errors': errors}
+        return render(request, 'chat/login.html', context=context)
     
 class Logout(View):
     def get(self, request):
@@ -99,6 +125,8 @@ class Register(View):
                     user = authenticate(request=request, username=username, password=password)
                     if user:
                         print("User created successfully.")
+                        login(request=request, user=user)
+                        return redirect("home")
                     else:
                         print("Fail !!")
                 except Exception as e:
