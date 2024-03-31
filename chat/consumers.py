@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import json
 
 from channels.generic.websocket import WebsocketConsumer
 
@@ -19,10 +20,10 @@ class ChatConsumer(WebsocketConsumer):
         print('user : ',  user)
         print('user_session : ', user_session)
         
-        # channel layer
-        print('channel layer : ',  self.channel_layer)
-        print('name : ', self.channel_name)
-        print('channels in layer : ', self.channel_layer.channels)
+        # channel layer - debug purpose 
+        # print('channel layer : ',  self.channel_layer)
+        # print('name : ', self.channel_name)
+        # print('channels in layer : ', self.channel_layer.channels)
         
         
     def receive(self, text_data):
@@ -30,8 +31,12 @@ class ChatConsumer(WebsocketConsumer):
         Receives a message from the client and prints it.
         Sends an event to the client page indicating that a new message has arrived.
         """
-        # Receive msg coming from the client
-        print(str(text_data))
+        # Receive msg coming from the client - debug purpose
+        # print(str(text_data))
+
+        received_data = json.loads(text_data)
+        print(received_data.get("type"))
+        print(received_data.get("message"))
         
         # sending event to the client page 
         self.send('{"type":"event_arrive", "status":"arrived"}')

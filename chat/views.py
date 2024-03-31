@@ -78,8 +78,13 @@ class Home(View):
         return redirect("main")
     
 class Chatting(View):
-    def get(self, request):
-        return render(request, 'chat/chatting.html')
+    def get(self, request, id):
+        # chatting with the person You want 
+        chat_person = UsersTbl.objects.get(id=id)
+        current_user = request.user
+        
+        context = {"current_user":current_user, "chat_person":chat_person}
+        return render(request, 'chat/chatting.html', context=context)
     
 class Register(View):
     def get(self, request):

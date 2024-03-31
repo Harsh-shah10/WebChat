@@ -23,3 +23,12 @@ class UsersTbl(AbstractUser):
         Sets the user's password to the given raw password, hashing it for security.
         """
         self.password = make_password(raw_password)
+
+# Model for storing message
+class Message(models.Model):
+    from_user = models.ForeignKey(UsersTbl, on_delete=models.PROTECT, default=None, related_name="from_user")
+    to_user = models.ForeignKey(UsersTbl, on_delete=models.PROTECT, default=None, related_name="to_user")
+    message = models.TextField()
+    created_date = models.DateField(null=True)
+    created_time = models.TimeField(null=True)
+    message_seen_status = models.BooleanField(null=False, default=False)

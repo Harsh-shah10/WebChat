@@ -20,7 +20,7 @@
         <br><br>
         <p>All Users</p>
         {% for i in all_users%}
-            <a href=""><section>
+            <a href="/chatting/{{ i.id }}"><section>
                 <img src="{% static 'chat/face.png' %}" style="width: 80px; height: 100px; border-radius: 50%;">
                 <p>{{ i.first_name }} {{ i.last_name }}</p>
             </section></a>
