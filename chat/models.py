@@ -29,6 +29,6 @@ class Message(models.Model):
     from_user = models.ForeignKey(UsersTbl, on_delete=models.PROTECT, default=None, related_name="from_user")
     to_user = models.ForeignKey(UsersTbl, on_delete=models.PROTECT, default=None, related_name="to_user")
     message = models.TextField()
-    created_date = models.DateField(null=True)
-    created_time = models.TimeField(null=True)
+    created_date = models.DateField(null=True, auto_now_add=True)
+    created_time = models.TimeField(null=True, auto_now_add=True) 
     message_seen_status = models.BooleanField(null=False, default=False)
