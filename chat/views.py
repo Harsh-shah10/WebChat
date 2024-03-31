@@ -68,7 +68,12 @@ class Logout(View):
 class Home(View):
     def get(self, request):
         if request.user.is_authenticated:
-            return render(request, 'chat/home.html')
+            
+            # Sending user list 
+            all_users = UsersTbl.objects.all()
+            context = {"current_user":request.user, "all_users":all_users}
+
+            return render(request, 'chat/home.html', context=context)
         
         return redirect("main")
     
