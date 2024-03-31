@@ -16,11 +16,13 @@ class ChatConsumer(WebsocketConsumer):
         
         user = self.scope.get("user")
         user_session = self.scope.get("session")
-        
-        print('user : ',  user)
-        print('user_session : ', user_session)
-        
+        # chat_person = self.scope.get("url_route")
+        chat_person = self.scope.get("url_route").get("kwargs").get("id")
+
         # channel layer - debug purpose 
+        print('user : ',  user)
+        print('chat_person : ',chat_person)
+        # print('user_session : ', user_session)
         # print('channel layer : ',  self.channel_layer)
         # print('name : ', self.channel_name)
         # print('channels in layer : ', self.channel_layer.channels)

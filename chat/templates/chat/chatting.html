@@ -45,8 +45,11 @@
     </footer>
 
     <script>
+        const chat_person = {{ chat_person.id }} // id of the user whom I am chatting with
+
         // Create a new WebSocket connection using the provided URL
-        const url = "ws://127.0.0.1:8000/wsocket1";
+        const url = `ws://127.0.0.1:8000/wsocket1/${chat_person}`;
+        {% comment %} console.log(chat_person) {% endcomment %}
         const chat_websocket = new WebSocket(url);
 
 
